@@ -7,9 +7,14 @@ services:
     ports:
       - "5000:80"
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-  
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=behshad;Username=behshad;Password=password
+    image: server-dotnet-image
+    depends_on:
+      - postgres
+
   client:
+    image: angular-client-image
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -17,3 +22,17 @@ services:
       - "4200:80"
     depends_on:
       - server
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: behshad
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: behshad
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
