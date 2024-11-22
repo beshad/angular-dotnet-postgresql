@@ -32,6 +32,18 @@ public class DataController : ControllerBase
     return Ok(logs);
   }
 
+  // api/things
+  [HttpGet("things")]
+  public async Task<IActionResult> GetThings()
+  {
+    var sampleThing = new
+    {
+      Name = "Sample thing endpoint",
+    };
+    // artificial asynchronous operation
+    return await Task.FromResult(Ok(sampleThing));
+  }
+
   // api/test
   [HttpGet("test")]
   public IActionResult Test()
