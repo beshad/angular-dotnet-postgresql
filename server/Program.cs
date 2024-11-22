@@ -1,48 +1,48 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
-
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddRazorPages();
-
-builder.Services.AddDbContext<ExampleContext>(options =>
-    options.UseNpgsql("Host=postgres;Port=5432;Database=behshad;Username=behshad;Password=password"));
-
-builder.Services.AddControllers();
-
-builder.Services.AddCors(options =>
+class Program
 {
-    options.AddPolicy("AllowAllOrigins", policy =>
+    static void Main(string[] args)
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
-});
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://0.0.0.0:80");
+        var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddDbContext<ApiDbContext>(options =>
+        options.UseNpgsql(conn));
 
-var app = builder.Build();
+        builder.Services.AddRazorPages();
+        builder.Services.AddControllers();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAllOrigins", policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
+        builder.WebHost.UseUrls("http://0.0.0.0:80");
+
+        var app = builder.Build();
+
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Error");
+            app.UseHsts();
+        }
+
+        app.UseCors("AllowAllOrigins");
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+        app.UseRouting();
+        app.UseAuthorization();
+
+        app.MapRazorPages();
+        app.MapControllers();
+
+        app.Run();
+    }
+
+
 }
-
-app.UseCors("AllowAllOrigins");
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapRazorPages();
-
-app.MapControllers();
-
-app.Run();
-
-

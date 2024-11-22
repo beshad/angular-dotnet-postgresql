@@ -1,23 +1,32 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-[Route("api/[controller]")]
+namespace AppDemo.Controllers;
 [ApiController]
-public class LogsController : ControllerBase
+[Route("[controller]")]
+public class DriversController : ControllerBase
 {
-  private readonly ExampleContext _context;
-
-  public LogsController(ExampleContext context)
+  private readonly ILogger<DriversController> _logger;
+  private readonly ApiDbContext _context;
+  public DriversController(
+      ILogger<DriversController> logger,
+      ApiDbContext context)
   {
+    _logger = logger;
     _context = context;
   }
-
-  // GET: api/logs
-  [HttpGet]
-  public async Task<ActionResult<IEnumerable<Log>>> GetLogs()
+  [HttpGet(Name = "GetAllDrivers")]
+  public async Task<IActionResult> Get()
   {
-    return await _context.Logs.ToListAsync();
+    var driver = new Log()
+    {
+      Name = "Behshad Ghorbani"
+    };
+    await _context.Logs.AddAsync(driver);
+    await _context.SaveChangesAsync();
+    var drivers = await _context.Logs.ToListAsync();
+    return Ok(drivers);
   }
 }

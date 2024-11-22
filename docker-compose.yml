@@ -1,4 +1,7 @@
-version: "3.9"
+networks:
+  dev:
+    driver: bridge
+
 services:
   server:
     build:
@@ -7,14 +10,19 @@ services:
     ports:
       - "5000:80"
     environment:
+      - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=User ID =postgres;Password=postgres;Server=postgres;Port=5432;Database=SampleDb;Pooling=true;
     image: server-dotnet-image
+    container_name: dotnet
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
+    networks:
+      - dev
 
   client:
     image: angular-client-image
+    container_name: angular
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -24,20 +32,19 @@ services:
       - server
 
   postgres:
-    image: postgres:15
+    image: postgres:latest
+    container_name: postgres
     environment:
-      POSTGRES_USER: behshad
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: behshad
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: SampleDb
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U behshad -d behshad"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    restart: always
+    networks:
+      - dev
 
 volumes:
   postgres_data:

@@ -13,4 +13,5 @@ RUN dotnet ef database update
 ENV ASPNETCORE_URLS=http://+:80
 RUN dotnet publish -c Release -o out
 EXPOSE 80
+EXPOSE 443
 ENTRYPOINT ["dotnet", "out/server.dll"]
