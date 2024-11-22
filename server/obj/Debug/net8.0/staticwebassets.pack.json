@@ -2,7 +2,7 @@
   "Files": [
     {
       "Id": "/home/behshad/www/sandbox/dotnet-sandpits/app/server/obj/Debug/net8.0/scopedcss/projectbundle/server.bundle.scp.css",
-      "PackagePath": "staticwebassets/server.bundle.scp.css"
+      "PackagePath": "staticwebassets/server.jsr0k7hp7s.bundle.scp.css"
     },
     {
       "Id": "/home/behshad/www/sandbox/dotnet-sandpits/app/server/wwwroot/css/site.css",
@@ -255,6 +255,10 @@
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.server.props",
       "PackagePath": "buildTransitive\\server.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.server.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.server.Microsoft.AspNetCore.StaticWebAssets.props",
