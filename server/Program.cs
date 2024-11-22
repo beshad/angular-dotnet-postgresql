@@ -7,7 +7,7 @@ class Program
         var builder = WebApplication.CreateBuilder(args);
 
         var conn = builder.Configuration.GetConnectionString("DefaultConnection");
-        builder.Services.AddDbContext<ApiDbContext>(options =>
+        builder.Services.AddDbContext<DataContext>(options =>
         options.UseNpgsql(conn));
 
         builder.Services.AddRazorPages();

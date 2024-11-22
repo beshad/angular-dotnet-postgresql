@@ -2906,11 +2906,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/behshad/www/sandbox/dotnet-sandpits/app/server/server.csproj",
+      "projectUniqueName": "/home/behshad/www/app/server/server.csproj",
       "projectName": "server",
-      "projectPath": "/home/behshad/www/sandbox/dotnet-sandpits/app/server/server.csproj",
+      "projectPath": "/home/behshad/www/app/server/server.csproj",
       "packagesPath": "/home/behshad/.nuget/packages/",
-      "outputPath": "/home/behshad/www/sandbox/dotnet-sandpits/app/server/obj/",
+      "outputPath": "/home/behshad/www/app/server/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/behshad/.nuget/NuGet/NuGet.Config"

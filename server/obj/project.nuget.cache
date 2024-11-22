@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BtJOB5Yq3pI=",
+  "dgSpecHash": "XNq01DbliWs=",
   "success": true,
-  "projectFilePath": "/home/behshad/www/sandbox/dotnet-sandpits/app/server/server.csproj",
+  "projectFilePath": "/home/behshad/www/app/server/server.csproj",
   "expectedPackageFiles": [
     "/home/behshad/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/behshad/.nuget/packages/microsoft.bcl.asyncinterfaces/7.0.0/microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
