@@ -36,12 +36,15 @@ public class DataController : ControllerBase
   [HttpGet("things")]
   public async Task<IActionResult> GetThings()
   {
-    var sampleThing = new
+    var sampleThings = new[]
     {
-      Name = "Sample thing endpoint",
+        new { Name = "Sample thing endpoint 1" },
+        new { Name = "Sample thing endpoint 2" },
+        new { Name = "Sample thing endpoint 3" }
     };
+
     // artificial asynchronous operation
-    return await Task.FromResult(Ok(sampleThing));
+    return await Task.FromResult(Ok(sampleThings));
   }
 
   // api/test
