@@ -16,8 +16,10 @@ services:
     image: server-dotnet-image
     container_name: dotnet
     depends_on:
-      - postgres
-    command: bash -c "dotnet ef database update && dotnet out/server.dll"
+      postgres:
+        condition: service_healthy
+    # command: bash -c "dotnet ef database update && dotnet out/server.dll"
+    command: bash -c "./wait-for-postgres.sh postgres && dotnet ef database update && dotnet out/server.dll"
     networks:
       - dev
 
@@ -26,9 +28,12 @@ services:
     container_name: angular
     build:
       context: ./client
-      dockerfile: Dockerfile
+      # dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
-      - "4200:80"
+      - "4200:4200"
+    volumes:
+      - ./client:/app
     depends_on:
       - server
 
@@ -46,6 +51,11 @@ services:
     restart: always
     networks:
       - dev
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 volumes:
   postgres_data:

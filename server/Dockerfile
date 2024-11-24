@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0
 WORKDIR /app
+COPY wait-for-postgres.sh /app/
+RUN chmod +x /app/wait-for-postgres.sh
 COPY *.csproj ./
 RUN dotnet restore
 RUN dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL

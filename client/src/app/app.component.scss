@@ -1,0 +1,21 @@
+@use "../variables" as var;
+
+
+header {
+  height: 72px;
+  background-color: var.$tertiary;
+  padding: 10px;
+  display: grid;
+  align-items: center;
+  justify-content: start;
+  img {
+    height: 20px;
+  }
+}
+
+main {
+  width: 90%;
+  margin: 50px auto;
+  background-color: var.$secondary;
+  color: #fff
+}

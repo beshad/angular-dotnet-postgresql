@@ -18,14 +18,14 @@ public class DataContext : DbContext
   {
     base.OnModelCreating(modelBuilder);
 
-    modelBuilder.Entity<Log>().HasData(
-        new Log { Id = 1, Name = "Log Entry 1" },
-        new Log { Id = 2, Name = "Log Entry 2" },
-        new Log { Id = 3, Name = "Log Entry 3" }
-    );
+    // modelBuilder.Entity<Log>().HasData(
+    //     new Log { Id = 1, Name = "Log Entry 1" },
+    //     new Log { Id = 2, Name = "Log Entry 2" },
+    //     new Log { Id = 3, Name = "Log Entry 3" }
+    // );
 
-    // var logData = ReadLogDataFromFile("logs.json");
-    // modelBuilder.Entity<Log>().HasData(logData);
+    var logData = ReadLogDataFromFile("/app/seeds.json");
+    modelBuilder.Entity<Log>().HasData(logData);
   }
 
   private List<Log> ReadLogDataFromFile(string filePath)
