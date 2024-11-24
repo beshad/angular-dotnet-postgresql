@@ -14,13 +14,14 @@ class Program
         builder.Services.AddControllers();
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAllOrigins", policy =>
+            options.AddPolicy("AllowAll", policy =>
             {
                 policy.AllowAnyOrigin()
                       .AllowAnyMethod()
                       .AllowAnyHeader();
             });
         });
+
 
         builder.WebHost.UseUrls("http://0.0.0.0:80");
 
@@ -32,12 +33,11 @@ class Program
             app.UseHsts();
         }
 
-        app.UseCors("AllowAllOrigins");
-        app.UseHttpsRedirection();
+        app.UseCors("AllowAll");
+        // app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthorization();
-
         app.MapRazorPages();
         app.MapControllers();
 

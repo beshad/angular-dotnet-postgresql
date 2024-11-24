@@ -17,6 +17,7 @@ services:
     container_name: dotnet
     depends_on:
       - postgres
+    command: bash -c "dotnet ef database update && dotnet out/server.dll"
     networks:
       - dev
 

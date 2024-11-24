@@ -19,15 +19,15 @@ public class DataController : ControllerBase
   }
 
   // /api/logs
-  [HttpGet(Name = "logs")]
-  public async Task<IActionResult> Get()
+  [HttpGet("logs")]
+  public async Task<IActionResult> GetLogs()
   {
-    var log = new Log()
-    {
-      Name = "Sample Log Written to DB"
-    };
-    await _context.Logs.AddAsync(log);
-    await _context.SaveChangesAsync();
+    // var log = new Log()
+    // {
+    //   Name = "Sample Log Written to DB"
+    // };
+    // await _context.Logs.AddAsync(log);
+    // await _context.SaveChangesAsync();
     var logs = await _context.Logs.ToListAsync();
     return Ok(logs);
   }
@@ -57,5 +57,19 @@ public class DataController : ControllerBase
       Timestamp = DateTime.UtcNow
     };
     return Ok(sampleResponse);
+  }
+
+  // POST: /api/logs
+  [HttpPost("logs")]
+  public async Task<IActionResult> Post([FromBody] Log newLog)
+  {
+    if (newLog == null || string.IsNullOrEmpty(newLog.Name))
+    {
+      return BadRequest("Log name is required.");
+    }
+
+    await _context.Logs.AddAsync(newLog);
+    await _context.SaveChangesAsync();
+    return CreatedAtAction(nameof(GetLogs), new { id = newLog.Id }, newLog);
   }
 }
