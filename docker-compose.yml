@@ -18,8 +18,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    # command: bash -c "dotnet ef database update && dotnet out/server.dll"
-    command: bash -c "./wait-for-postgres.sh postgres && dotnet ef database update -c DataContext && dotnet out/server.dll"
     networks:
       - dev
 
