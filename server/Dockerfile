@@ -12,9 +12,10 @@ COPY . .
 RUN dotnet build -c Release
 RUN dotnet ef migrations add InitialCreate
 RUN dotnet ef migrations add SeedLogs
-# RUN dotnet ef database update
+RUN dotnet ef database update -c DataContext
 ENV ASPNETCORE_URLS=http://+:80
 RUN dotnet publish -c Release -o out
+ENV ConnectionStrings__DefaultConnection=User\ ID=postgres;Password=postgres;Server=postgres;Port=5432;Database=SampleDb;Pooling=true;
 EXPOSE 80
 EXPOSE 443
 ENTRYPOINT ["dotnet", "out/server.dll"]

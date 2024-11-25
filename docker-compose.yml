@@ -19,7 +19,7 @@ services:
       postgres:
         condition: service_healthy
     # command: bash -c "dotnet ef database update && dotnet out/server.dll"
-    command: bash -c "./wait-for-postgres.sh postgres && dotnet ef database update && dotnet out/server.dll"
+    command: bash -c "./wait-for-postgres.sh postgres && dotnet ef database update -c DataContext && dotnet out/server.dll"
     networks:
       - dev
 
@@ -45,7 +45,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: SampleDb
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always

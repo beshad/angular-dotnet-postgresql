@@ -24,7 +24,7 @@ public class DataContext : DbContext
     //     new Log { Id = 3, Name = "Log Entry 3" }
     // );
 
-    var logData = ReadLogDataFromFile("/app/seeds.json");
+    var logData = ReadLogDataFromFile("./seeds.json");
     modelBuilder.Entity<Log>().HasData(logData);
   }
 
