@@ -1,40 +1,57 @@
 using Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Globalization;
+using System.Text.Json;
+using CsvHelper;
 
 namespace Server.Data;
 public class DataContext : DbContext
 {
 
-  public DbSet<Log> Logs { get; set; }
-  public DbSet<Thing> Things { get; set; }
+  public DbSet<ChargeLog> ChargeLogs { get; set; }
   public DataContext(DbContextOptions<DataContext> options) : base(options)
   {
-    Logs = Set<Log>();
-    Things = Set<Thing>();
+    ChargeLogs = Set<ChargeLog>();
   }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
 
-    // modelBuilder.Entity<Log>().HasData(
-    //     new Log { Id = 1, Name = "Log Entry 1" },
-    //     new Log { Id = 2, Name = "Log Entry 2" },
-    //     new Log { Id = 3, Name = "Log Entry 3" }
-    // );
-
-    var logData = ReadLogDataFromFile("./seeds.json");
-    modelBuilder.Entity<Log>().HasData(logData);
+    var chargeLog = ReadChargeLogsFromFolder("./charge-logs");
+    modelBuilder.Entity<ChargeLog>().HasData(chargeLog);
   }
 
-  private List<Log> ReadLogDataFromFile(string filePath)
+  private IEnumerable<ChargeLog> ReadChargeLogsFromFolder(string folderPath)
   {
-    if (!File.Exists(filePath))
-      throw new FileNotFoundException("Log data file not found", filePath);
+    var files = Directory.GetFiles(folderPath, "*.csv");
+    var chargeLogs = new List<ChargeLog>();
 
-    var jsonData = File.ReadAllText(filePath);
-    return JsonConvert.DeserializeObject<List<Log>>(jsonData) ?? new List<Log>();
+    for (int i = 0; i < files.Length; i++)
+    {
+      var filePath = files[i];
+      var fileName = Path.GetFileNameWithoutExtension(filePath);
+      var parts = fileName.Split(" - ");
+      if (parts.Length < 3) throw new FormatException("Invalid file name format.");
+
+      var chargerName = parts[1];
+      var timestampString = parts[2];
+
+      if (!double.TryParse(timestampString, out var timestamp))
+        throw new FormatException("Invalid timestamp format.");
+
+      var fileContent = File.ReadAllText(filePath);
+      chargeLogs.Add(new ChargeLog
+      {
+        Id = i + 1,
+        Timestamp = timestamp,
+        ChargerName = chargerName,
+        Data = fileContent
+      });
+    }
+    return chargeLogs;
   }
+
 
 }

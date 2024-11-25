@@ -9,7 +9,6 @@ ENV PATH="${PATH}:/root/.dotnet/tools"
 COPY . .
 RUN dotnet build -c Release
 RUN dotnet ef migrations add InitialCreate
-# RUN dotnet ef migrations add SeedLogs
 # RUN dotnet ef database update --verbose
 ENV ASPNETCORE_URLS=http://+:80
 RUN dotnet publish -c Release -o out

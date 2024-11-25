@@ -21,9 +21,8 @@ class Program
                       .AllowAnyHeader();
             });
         });
-
-
-        builder.WebHost.UseUrls("http://0.0.0.0:80");
+ 
+        builder.WebHost.UseUrls("http://0.0.0.0:6666");
 
         var app = builder.Build();
 
