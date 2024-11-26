@@ -22,7 +22,6 @@ public class DataController : ControllerBase
   [HttpGet("charge-logs")]
   public async Task<IActionResult> GetLogs()
   {
-
     var logs = await _context.ChargeLogs.ToListAsync();
     return Ok(logs);
   }
