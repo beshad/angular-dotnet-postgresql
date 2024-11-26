@@ -31,16 +31,15 @@ public class DataContext : DbContext
     for (int i = 0; i < files.Length; i++)
     {
       var filePath = files[i];
-      var fileName = Path.GetFileNameWithoutExtension(filePath);
-      var parts = fileName.Split(" - ");
-      if (parts.Length < 3) throw new FormatException("Invalid file name format.");
-
-      var chargerName = parts[1];
+      string[] lines = File.ReadAllLines(filePath);
+      string chargerName = lines[0].Split(',')[1].Trim(); //first line
+      string chargerSerialNumber = lines[1].Split(',')[1].Trim();
 
       var fileContent = File.ReadAllText(filePath);
       chargeLogs.Add(new ChargeLog
       {
         Id = i + 1,
+        ChargerSerialNumber = chargerSerialNumber,
         ChargerName = chargerName,
         Message = fileContent
       });
