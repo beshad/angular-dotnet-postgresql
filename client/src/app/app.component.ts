@@ -1,24 +1,31 @@
 import { Component, Inject, NgZone, PLATFORM_ID } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
 
 // amCharts imports
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { isPlatformBrowser } from "@angular/common";
+import { HttpClientModule } from "@angular/common/http";
+import { from, map, skip, switchMap, tap } from "rxjs";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
+  imports: [HttpClientModule],
 })
 export class AppComponent {
   private root!: am5.Root;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private zone: NgZone
-  ) {}
+    private zone: NgZone,
+    private http: HttpClient
+  ) {
+    this.getLogs();
+  }
 
   // Run the function only in the browser
   browserOnly(f: () => void) {
@@ -27,6 +34,23 @@ export class AppComponent {
         f();
       });
     }
+  }
+
+  getLogs() {
+    this.http
+      .get<any[]>("api/charge-logs")
+      .pipe(
+        switchMap((resp: any) => from(resp)),
+        map((resp: any) => {
+          const message = JSON.parse(resp.message);
+          resp.message = message;
+          // Fix this! first element is the bloody csv header
+          resp.message.data.shift();
+          return resp;
+        }),
+        tap(console.log)
+      )
+      .subscribe();
   }
 
   ngAfterViewInit() {
@@ -46,17 +70,17 @@ export class AppComponent {
       // Define data
       let data = [
         {
-          category: "Sample 1",
+          category: "Charger 1",
           value1: 1000,
           value2: 588,
         },
         {
-          category: "Sample 2",
+          category: "Charger 2",
           value1: 1200,
           value2: 1800,
         },
         {
-          category: "Sample 3",
+          category: "Charger 3",
           value1: 850,
           value2: 1230,
         },
