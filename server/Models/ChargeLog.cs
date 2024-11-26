@@ -8,7 +8,7 @@ namespace Server.Models
     public int Id { get; set; }
     public string ChargerSerialNumber { get; set; } = string.Empty;
     public string ChargerName { get; set; } = string.Empty;
-    // [Column(TypeName = "jsonb")]
+    [Column(TypeName = "jsonb")]
     public string Message { get; set; } = null!;
   }
 }
