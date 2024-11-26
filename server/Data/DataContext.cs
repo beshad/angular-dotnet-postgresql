@@ -1,11 +1,9 @@
 using Server.Models;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.Globalization;
-using System.Text.Json;
 using CsvHelper;
 using Newtonsoft.Json.Linq;
-using System.Text;
+using CsvHelper.Configuration;
 
 namespace Server.Data;
 public class DataContext : DbContext
@@ -24,7 +22,7 @@ public class DataContext : DbContext
     var chargeLog = ReadChargeLogsFromFolder("./charge-logs");
     modelBuilder.Entity<ChargeLog>().HasData(chargeLog);
   }
-  private IEnumerable<ChargeLog> ReadChargeLogsFromFolder(string folderPath)
+  public IEnumerable<ChargeLog> ReadChargeLogsFromFolder(string folderPath)
   {
     var files = Directory.GetFiles(folderPath, "*.csv");
     var chargeLogs = new List<ChargeLog>();
@@ -32,36 +30,46 @@ public class DataContext : DbContext
     for (int i = 0; i < files.Length; i++)
     {
       var filePath = files[i];
-      string[] lines = File.ReadAllLines(filePath);
-      string chargerName = lines[0].Split(',')[1].Trim(); //first line
+      var lines = File.ReadAllLines(filePath);
+
+      string chargerName = lines[0].Split(',')[1].Trim();
       string chargerSerialNumber = lines[1].Split(',')[1].Trim();
 
-      string[] dataLines = lines.Skip(3).Take(10).ToArray(); // just take 10 linesas CSV files are too large
-      string[] columnNames = lines[3].Split(',');
+      var dataLines = string.Join(Environment.NewLine, lines.Skip(3));
 
-      var jsonData = new JObject();
-      var dataArray = new JArray();
-      jsonData["data"] = dataArray;
-
-      foreach (string line in dataLines)
+      using (var reader = new StringReader(dataLines))
+      using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = true }))
       {
-        string[] values = line.Split(',');
-        var row = new JObject();
-        for (int j = 0; j < columnNames.Length; j++)
+        var records = csv.GetRecords<dynamic>().Take(20).ToList(); // Limit to first 20 records
+
+        var jsonData = new JObject();
+        var dataArray = new JArray();
+        jsonData["data"] = dataArray;
+
+        foreach (var record in records)
         {
-          row[columnNames[j].Trim()] = values[j].Trim();
+          var row = new JObject();
+          foreach (var property in record)
+          {
+            row[property.Key] = property.Value.ToString().Trim();
+          }
+          dataArray.Add(row);
         }
-        dataArray.Add(row);
-      }
 
-      chargeLogs.Add(new ChargeLog
-      {
-        Id = i + 1,
-        ChargerSerialNumber = chargerSerialNumber,
-        ChargerName = chargerName,
-        Message = jsonData.ToString()
-      });
+        chargeLogs.Add(new ChargeLog
+        {
+          Id = i + 1,
+          ChargerSerialNumber = chargerSerialNumber,
+          ChargerName = chargerName,
+          Message = jsonData.ToString()
+        });
+      }
     }
+
     return chargeLogs;
   }
+
+
+
+
 }

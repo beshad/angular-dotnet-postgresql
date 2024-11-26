@@ -8,7 +8,7 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { isPlatformBrowser } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
-import { from, map, skip, switchMap, tap } from "rxjs";
+import { from, map, skip, switchMap, tap, toArray } from "rxjs";
 
 @Component({
   selector: "app-root",
@@ -38,16 +38,15 @@ export class AppComponent {
 
   getLogs() {
     this.http
-      .get<any[]>("api/charge-logs")
+      .get<unknown[]>("api/charge-logs")
       .pipe(
         switchMap((resp: any) => from(resp)),
         map((resp: any) => {
           const message = JSON.parse(resp.message);
           resp.message = message;
-          // Fix this! first element is the bloody csv header
-          resp.message.data.shift();
           return resp;
         }),
+        toArray(),
         tap(console.log)
       )
       .subscribe();
