@@ -36,18 +36,13 @@ public class DataContext : DbContext
       if (parts.Length < 3) throw new FormatException("Invalid file name format.");
 
       var chargerName = parts[1];
-      var timestampString = parts[2];
-
-      if (!double.TryParse(timestampString, out var timestamp))
-        throw new FormatException("Invalid timestamp format.");
 
       var fileContent = File.ReadAllText(filePath);
       chargeLogs.Add(new ChargeLog
       {
         Id = i + 1,
-        Timestamp = timestamp,
         ChargerName = chargerName,
-        Data = fileContent
+        Message = fileContent
       });
     }
     return chargeLogs;
