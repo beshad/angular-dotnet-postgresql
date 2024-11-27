@@ -25,8 +25,4 @@ public class DataController : ControllerBase
     var logs = await _context.ChargeLogs.ToListAsync();
     return Ok(logs);
   }
-
-
-
-
 }

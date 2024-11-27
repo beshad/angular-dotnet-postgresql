@@ -1,6 +1,5 @@
 @use "../variables" as var;
 
-
 header {
   height: 72px;
   background-color: var.$tertiary;
@@ -13,9 +12,9 @@ header {
   }
 }
 
-main {
-  width: 90%;
-  margin: 50px auto;
+
+.chart {
   background-color: var.$secondary;
-  color: #fff
+  color: #fff;
+  min-height: 400px;
 }

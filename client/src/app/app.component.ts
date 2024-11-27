@@ -1,33 +1,34 @@
 import { Component, Inject, NgZone, PLATFORM_ID } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
-
-// amCharts imports
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { isPlatformBrowser } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
-import { from, map, skip, switchMap, tap, toArray } from "rxjs";
+import { from, map, switchMap, tap, toArray } from "rxjs";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
-  imports: [HttpClientModule],
+  imports: [HttpClientModule, ReactiveFormsModule],
 })
 export class AppComponent {
-  private root!: am5.Root;
+  private rootChart1: am5.Root;
+  data;
+  options = [];
+  selectedOption = new FormControl({});
+  chart: am5xy.XYChart;
+  series: am5xy.LineSeries;
+  xAxis: any;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private zone: NgZone,
     private http: HttpClient
-  ) {
-    this.getLogs();
-  }
+  ) {}
 
-  // Run the function only in the browser
   browserOnly(f: () => void) {
     if (isPlatformBrowser(this.platformId)) {
       this.zone.runOutsideAngular(() => {
@@ -37,115 +38,141 @@ export class AppComponent {
   }
 
   getLogs() {
-    this.http
-      .get<unknown[]>("api/charge-logs")
+    return this.http.get<unknown[]>("api/charge-logs").pipe(
+      switchMap((resp: any) => from(resp)),
+      map((resp: any) => {
+        const message = JSON.parse(resp.message);
+        resp.message = message;
+        return resp;
+      }),
+      toArray(),
+      tap(console.log),
+      tap((resp) => {
+        this.data = resp;
+        resp.forEach((charger) => {
+          this.options.push({
+            label: charger.chargerName,
+            value: charger.chargerSerialNumber,
+          });
+          this.selectedOption.setValue(this.options[0].value);
+        });
+      })
+    );
+  }
+
+  ngAfterViewInit() {
+    this.rootChart1 = am5.Root.new("chart-1");
+    this.getLogs()
       .pipe(
-        switchMap((resp: any) => from(resp)),
-        map((resp: any) => {
-          const message = JSON.parse(resp.message);
-          resp.message = message;
-          return resp;
-        }),
-        toArray(),
-        tap(console.log)
+        tap((data) => {
+          const logs = [];
+          data = data[0].message.data;
+          data.forEach((d) => {
+            logs.push({
+              category: d["Finish Time"],
+              value: parseInt(d["End Current (A)"]),
+            });
+          });
+          this.chart1(logs);
+        })
       )
       .subscribe();
   }
 
-  ngAfterViewInit() {
-    // Chart code goes in here
+  onChargerChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    const data = this.data.find(
+      (charger) => charger.chargerSerialNumber === value
+    ).message.data;
+    const logs = [];
+    data.forEach((d) => {
+      logs.push({
+        category: d["Finish Time"],
+        value: parseInt(d["End Current (A)"]),
+      });
+    });
+    this.series.data.setAll(logs);
+    this.xAxis.data.setAll(logs);
+  }
+
+  chart1(data) {
     this.browserOnly(() => {
-      let root = am5.Root.new("chartdiv");
+      this.rootChart1.setThemes([am5themes_Animated.new(this.rootChart1)]);
 
-      root.setThemes([am5themes_Animated.new(root)]);
-
-      let chart = root.container.children.push(
-        am5xy.XYChart.new(root, {
+      let chart = this.rootChart1.container.children.push(
+        am5xy.XYChart.new(this.rootChart1, {
           panY: false,
-          layout: root.verticalLayout,
+          layout: this.rootChart1.verticalLayout,
         })
       );
 
-      // Define data
-      let data = [
-        {
-          category: "Charger 1",
-          value1: 1000,
-          value2: 588,
-        },
-        {
-          category: "Charger 2",
-          value1: 1200,
-          value2: 1800,
-        },
-        {
-          category: "Charger 3",
-          value1: 850,
-          value2: 1230,
-        },
-      ];
-
-      // Create Y-axis
       let yAxis = chart.yAxes.push(
-        am5xy.ValueAxis.new(root, {
-          renderer: am5xy.AxisRendererY.new(root, {}),
+        am5xy.ValueAxis.new(this.rootChart1, {
+          renderer: am5xy.AxisRendererY.new(this.rootChart1, {}),
         })
       );
 
-      /// text color white to y Axis text
+      yAxis.children.push(
+        am5.Label.new(this.rootChart1, {
+          rotation: -90,
+          text: "End Current (A)",
+          y: am5.p50,
+          centerX: am5.p50,
+          centerY: am5.p50,
+          fontSize: "14px",
+          fill: am5.color(0xffffff),
+        })
+      );
+
       yAxis.get("renderer").labels.template.set("fill", am5.color(0xffffff));
 
-      // Create X-Axis
-      let xAxis = chart.xAxes.push(
-        am5xy.CategoryAxis.new(root, {
-          renderer: am5xy.AxisRendererX.new(root, {}),
+      this.xAxis = chart.xAxes.push(
+        am5xy.CategoryAxis.new(this.rootChart1, {
+          renderer: am5xy.AxisRendererX.new(this.rootChart1, {}),
           categoryField: "category",
         })
       );
 
-      /// text color white to x Axis text
-      xAxis.get("renderer").labels.template.set("fill", am5.color(0xffffff));
-      xAxis.data.setAll(data);
+      this.xAxis.get("renderer").labels.template.setAll({
+        fill: am5.color(0xffffff),
+        fontSize: "10px",
+      });
+      this.xAxis.children.push(
+        am5.Label.new(this.rootChart1, {
+          text: "Finish Time",
+          x: am5.p50,
+          centerX: am5.p50,
+          centerY: am5.p50,
+          fontSize: "14px",
+          fill: am5.color(0xffffff),
+        })
+      );
+      this.xAxis.data.setAll(data);
 
-      // Create series
-      let series1 = chart.series.push(
-        am5xy.ColumnSeries.new(root, {
+      this.series = chart.series.push(
+        am5xy.SmoothedXLineSeries.new(this.rootChart1, {
           name: "Series",
-          xAxis: xAxis,
+          xAxis: this.xAxis,
           yAxis: yAxis,
-          valueYField: "value1",
+          valueYField: "value",
           categoryXField: "category",
         })
       );
-      series1.data.setAll(data);
+      this.series.data.setAll(data);
 
-      let series2 = chart.series.push(
-        am5xy.ColumnSeries.new(root, {
-          name: "Series",
-          xAxis: xAxis,
-          yAxis: yAxis,
-          valueYField: "value2",
-          categoryXField: "category",
-        })
+      let legend = this.chart.children.push(
+        am5.Legend.new(this.rootChart1, {})
       );
-      series2.data.setAll(data);
-
-      // Add legend
-      let legend = chart.children.push(am5.Legend.new(root, {}));
       legend.data.setAll(chart.series.values);
 
-      // Add cursor
-      chart.set("cursor", am5xy.XYCursor.new(root, {}));
-
-      this.root = root;
+      this.chart.set("cursor", am5xy.XYCursor.new(this.rootChart1, {}));
     });
   }
 
   ngOnDestroy() {
-    // Clean up chart when the component is removed
     this.browserOnly(() => {
-      if (this.root) {
-        this.root.dispose();
+      if (this.rootChart1) {
+        this.rootChart1.dispose();
       }
     });
   }
