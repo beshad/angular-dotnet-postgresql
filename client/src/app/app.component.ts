@@ -161,7 +161,7 @@ export class AppComponent {
     });
     this.xAxis1.children.push(
       am5.Label.new(this.rootChart1, {
-        text: "Finish Time",
+        text: "Charge Finish Time",
         x: am5.p50,
         centerX: am5.p50,
         centerY: am5.p50,
