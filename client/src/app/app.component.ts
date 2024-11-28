@@ -245,12 +245,7 @@ export class AppComponent {
       strokeWidth: 2,
       strokeGradient: am5.LinearGradient.new(this.rootChart2, {
         rotation: 0,
-        stops: [
-          { color: am5.color(0x19d228) },
-          { color: am5.color(0xf4fb16) },
-          { color: am5.color(0xf6d32b) },
-          { color: am5.color(0xfb7116) },
-        ],
+        stops: [{ color: am5.color(0xfb7116) }, { color: am5.color(0x19d228) }],
       }),
     });
 
