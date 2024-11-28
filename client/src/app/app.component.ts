@@ -397,7 +397,7 @@ export class AppComponent {
 
     label.set("fill", am5.color(0xffffff));
     const rounded = parseFloat(terminationCellVoltage.toFixed(1));
-    label.set("text", Math.round(rounded).toString() + "%");
+    label.set("text", Math.round(rounded).toString() + "V");
 
     xAxis.createAxisRange(axisDataItem);
 
