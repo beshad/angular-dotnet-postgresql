@@ -32,6 +32,11 @@ export class AppComponent {
   series3: am5xy.LineSeries;
   xAxis3: any;
 
+  private rootChart4: am5.Root;
+  chart4: am5xy.XYChart;
+  series4: am5xy.LineSeries;
+  xAxis4: any;
+
   data;
   options = [];
   selectedOption = new FormControl({});
@@ -78,6 +83,7 @@ export class AppComponent {
     this.rootChart1 = am5.Root.new("chart-1");
     this.rootChart2 = am5.Root.new("chart-2");
     this.rootChart3 = am5.Root.new("chart-3");
+    // this.rootChart4 = am5.Root.new("chart-4");
 
     this.getLogs()
       .pipe(
@@ -93,7 +99,7 @@ export class AppComponent {
           });
           this.browserOnly(() => {
             this.initChart1(logs);
-            this.initChart2(logs);
+            // this.initChart2(logs);
           });
         })
       )
@@ -271,7 +277,7 @@ export class AppComponent {
       pinRadius: 40,
       radius: am5.percent(100),
       innerRadius: 40,
-      bottomWidth: 4,
+      bottomWidth: 10,
       topWidth: 0,
     });
 
@@ -279,13 +285,13 @@ export class AppComponent {
       fillOpacity: 0,
       strokeOpacity: 1,
       stroke: am5.color(0xffffff),
-      strokeWidth: 3,
+      strokeWidth: 2,
     });
     hand.hand.setAll({
       fillOpacity: 0,
       strokeOpacity: 1,
       stroke: am5.color(0xffffff),
-      strokeWidth: 5,
+      strokeWidth: 2,
     });
 
     const bullet = axisDataItem.set(
@@ -354,7 +360,7 @@ export class AppComponent {
       am5xy.ValueAxis.new(this.rootChart3, {
         maxDeviation: 0,
         min: 0,
-        max: 100,
+        max: 10,
         strictMinMax: true,
         renderer: axisRenderer,
       })
@@ -375,13 +381,13 @@ export class AppComponent {
       fillOpacity: 0,
       strokeOpacity: 1,
       stroke: am5.color(0xffffff),
-      strokeWidth: 3,
+      strokeWidth: 2,
     });
     hand.hand.setAll({
       fillOpacity: 0,
       strokeOpacity: 1,
       stroke: am5.color(0xffffff),
-      strokeWidth: 5,
+      strokeWidth: 2,
     });
 
     const bullet = axisDataItem.set(

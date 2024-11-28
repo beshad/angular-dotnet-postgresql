@@ -13,10 +13,10 @@
       <i class="fa-solid fa-location-pin"></i>
       Warehouse #51 - Charge'n Lift
     </h1>
-    <p>No. of Equipments on site <span class="badge bg-secondary">5</span></p>
+    <p>123 Main Street, Anytown, USA</p>
   </div>
 
-  <div class="row">
+  <div class="row first-row">
     <div class="col col-sm-12 col-md-4">
       <div class="chart">
         <div
@@ -34,19 +34,17 @@
       </div>
     </div>
     <div class="col col-sm-12 col-md-4">
-      <div class="chart">
-        <div
-          id="chart-4"
-          style="width: 100%; height: 300px"></div>
-        <h4 class="text-center mt-2">PLACEHOLDER</h4>
+      <div class="chart no-equipment">
+        <p>5</p>
+        <h4 class="text-center mt-2">No. of Equipments on site</h4>
       </div>
     </div>
   </div>
   <hr />
   <div class="form-group d-flex justify-content-between align-items-center">
-    <h2 class="text-white">
+    <h3 class="text-white">
       <i class="fa-solid fa-car-battery"></i> Charger {{ selectedOption.value }}
-    </h2>
+    </h3>
     <form class="w-25 my-3">
       <label for="chargers">Select Equipment</label>
       <select
