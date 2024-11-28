@@ -4,11 +4,17 @@ header {
   height: 72px;
   background-color: var.$tertiary;
   padding: 10px;
-  display: grid;
+  display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: space-between;
   img {
     height: 20px;
+  }
+  .icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
   }
 }
 
@@ -16,9 +22,8 @@ label {
   color: var.$tertiary;
 }
 
-
 .chart {
   background-color: var.$secondary;
   color: #fff;
-  padding: 20px
+  padding: 20px;
 }

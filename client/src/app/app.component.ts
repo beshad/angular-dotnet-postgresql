@@ -68,6 +68,7 @@ export class AppComponent {
             value: charger.chargerSerialNumber,
           });
           this.selectedOption.setValue(this.options[0].value);
+          console.log(this.selectedOption)
         });
       })
     );
@@ -199,7 +200,7 @@ export class AppComponent {
       const avg = this.getAvg(d.message.data, "State Of Health (%)");
       soh.push(avg);
       terminationCellVoltage.push(
-        this.getAvg(d.message.data, "Termination Cell Voltage (V)")
+        this.getAvg(d.message.data, "Energy Returned (kWh)")
       );
     });
 
@@ -244,8 +245,12 @@ export class AppComponent {
       strokeOpacity: 1,
       strokeWidth: 2,
       strokeGradient: am5.LinearGradient.new(this.rootChart2, {
-        rotation: 0,
-        stops: [{ color: am5.color(0xfb7116) }, { color: am5.color(0x19d228) }],
+        stops: [
+          { color: am5.color(0xfb7116) },
+          { color: am5.color(0xf6d32b) },
+          { color: am5.color(0xf4fb16) },
+          { color: am5.color(0x19d228) },
+        ],
       }),
     });
 
@@ -266,7 +271,7 @@ export class AppComponent {
       pinRadius: 40,
       radius: am5.percent(100),
       innerRadius: 40,
-      bottomWidth: 7,
+      bottomWidth: 4,
       topWidth: 0,
     });
 
@@ -295,7 +300,7 @@ export class AppComponent {
         centerX: am5.percent(50),
         textAlign: "center",
         centerY: am5.percent(50),
-        fontSize: "2em",
+        fontSize: "1.5em",
       })
     );
 
@@ -337,10 +342,10 @@ export class AppComponent {
       strokeGradient: am5.LinearGradient.new(this.rootChart3, {
         rotation: 0,
         stops: [
-          { color: am5.color(0x19d228) },
-          { color: am5.color(0xf4fb16) },
-          { color: am5.color(0xf6d32b) },
           { color: am5.color(0xfb7116) },
+          { color: am5.color(0xf6d32b) },
+          { color: am5.color(0xf4fb16) },
+          { color: am5.color(0x19d228) },
         ],
       }),
     });
@@ -391,13 +396,13 @@ export class AppComponent {
         centerX: am5.percent(50),
         textAlign: "center",
         centerY: am5.percent(50),
-        fontSize: "2em",
+        fontSize: "1.5em",
       })
     );
 
     label.set("fill", am5.color(0xffffff));
     const rounded = parseFloat(terminationCellVoltage.toFixed(1));
-    label.set("text", Math.round(rounded).toString() + "V");
+    label.set("text", Math.round(rounded).toString() + "kWh");
 
     xAxis.createAxisRange(axisDataItem);
 
