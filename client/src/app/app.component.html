@@ -4,8 +4,31 @@
     alt="logo" />
 </header>
 <main class="container">
-  <div class="form-group mb-5 d-flex justify-content-end">
-    <form class="w-25">
+  <h1 class="text-white my-5">
+    <i class="fa-solid fa-location-pin"></i>
+    Warehouse #51 - Charge'n Lift
+  </h1>
+  <div class="row">
+    <div class="col col-sm-12 col-md-6">
+      <div class="chart">
+        <div
+          id="chart-2"
+          style="width: 100%; height: 300px"></div>
+        <h3 class="text-center mt-2">Avg. State Of Health (%)</h3>
+      </div>
+    </div>
+    <div class="col col-sm-12 col-md-6">
+      <div class="chart">
+        <div
+          id="chart-3"
+          style="width: 100%; height: 300px"></div>
+        <h3 class="text-center mt-2">Avg. Termination Cell Voltage (V)</h3>
+      </div>
+    </div>
+  </div>
+  <hr />
+  <div class="form-group d-flex justify-content-end">
+    <form class="w-25 my-3">
       <label for="chargers">Select Charger</label>
       <select
         id="chargers"
@@ -21,21 +44,12 @@
     </form>
   </div>
 
-  <div class="row mb-4">
+  <div class="row">
     <div class="col">
       <div
         class="chart"
         id="chart-1"
         style="width: 100%; height: 500px"></div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col col-sm-12 col-md-6">
-      <div class="chart"></div>
-    </div>
-    <div class="col col-sm-12 col-md-6">
-      <div class="chart"></div>
     </div>
   </div>
 </main>

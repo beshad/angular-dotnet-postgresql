@@ -12,9 +12,13 @@ header {
   }
 }
 
+label {
+  color: var.$tertiary;
+}
+
 
 .chart {
   background-color: var.$secondary;
   color: #fff;
-  min-height: 400px;
+  padding: 20px
 }
